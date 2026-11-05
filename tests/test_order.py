@@ -40,5 +40,5 @@ class TestOrder:
 
         assert page.wait_for_url_part(YANDEX_URL_PART), (
             f"Ожидался редирект на {YANDEX_URL_PART}, "
-            f"фактический URL: {driver.current_url}"
+            f"фактический URL: {page.get_current_url()}"
         )

@@ -8,9 +8,7 @@ from pages.base_page import BasePage
 class MainPage(BasePage):
     @allure.step("Принять сообщение о cookie, если оно показано")
     def accept_cookies(self):
-        buttons = self.driver.find_elements(*MainPageLocators.COOKIE_ACCEPT_BUTTON)
-        if buttons and buttons[0].is_displayed():
-            buttons[0].click()
+        self.click_if_visible(MainPageLocators.COOKIE_ACCEPT_BUTTON)
 
     @allure.step("Открыть форму заказа через точку входа: {entry_point}")
     def click_order_button(self, entry_point):
@@ -24,8 +22,8 @@ class MainPage(BasePage):
     @allure.step("Открыть вопрос FAQ с индексом {index}")
     def open_faq_question(self, index):
         locator = MainPageLocators.faq_question(index)
-        question = self.scroll_to(locator)
-        question.send_keys(Keys.ENTER)
+        self.scroll_to(locator)
+        self.press_key(locator, Keys.ENTER)
 
     @allure.step("Получить ответ FAQ с индексом {index}")
     def get_faq_answer(self, index):

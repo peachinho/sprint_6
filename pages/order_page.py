@@ -1,9 +1,7 @@
 from datetime import date, timedelta
 
 import allure
-from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as ec
 
 from locators.order_page_locators import OrderPageLocators
 from pages.base_page import BasePage
@@ -23,9 +21,8 @@ class OrderPage(BasePage):
     @allure.step("Заполнить данные об аренде")
     def fill_rental_details(self, order):
         delivery_date = (date.today() + timedelta(days=2)).strftime("%d.%m.%Y")
-        date_input = self.find_visible(OrderPageLocators.DELIVERY_DATE_INPUT)
-        date_input.send_keys(delivery_date)
-        date_input.send_keys(Keys.ESCAPE)
+        self.type_text(OrderPageLocators.DELIVERY_DATE_INPUT, delivery_date)
+        self.press_key(OrderPageLocators.DELIVERY_DATE_INPUT, Keys.ESCAPE)
 
         self.click(OrderPageLocators.RENTAL_PERIOD_DROPDOWN)
         self.click(OrderPageLocators.rental_period_option(order["rental_period"]))
@@ -47,16 +44,4 @@ class OrderPage(BasePage):
 
     @allure.step("Нажать логотип Яндекса и перейти в новую вкладку")
     def click_yandex_logo_and_switch(self):
-        original_window = self.driver.current_window_handle
-        self.click(OrderPageLocators.YANDEX_LOGO)
-        self.wait.until(ec.number_of_windows_to_be(2))
-        new_window = next(
-            handle for handle in self.driver.window_handles if handle != original_window
-        )
-        self.driver.switch_to.window(new_window)
-
-    def wait_for_url_part(self, url_part):
-        try:
-            return self.wait.until(ec.url_contains(url_part))
-        except TimeoutException:
-            return False
+        self.click_and_switch_to_new_window(OrderPageLocators.YANDEX_LOGO)
